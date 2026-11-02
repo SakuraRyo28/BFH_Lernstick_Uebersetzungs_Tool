@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# VS Code
+.vscode/
+
+# Virtuelle Python-Umgebungen
+.venv/
+venv/
+
+# Lokale Datenbank
+data/dictionary.db
+data/dictionary.db-shm
+data/dictionary.db-wal
+
+# Große Wörterbuch-Rohdaten
+data/*.jsonl
+data/*.jsonl.gz
+
+# Testdaten dürfen im Repository bleiben
+!data/test_import.jsonl
