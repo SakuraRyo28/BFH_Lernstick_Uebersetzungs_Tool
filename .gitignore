@@ -21,3 +21,8 @@ data/*.jsonl.gz
 
 # Testdaten dürfen im Repository bleiben
 !data/test_import.jsonl
+
+# DBnary
+data/*.ttl
+data/*.ttl.bz2
+data/*.tgz
