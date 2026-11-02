@@ -14,12 +14,12 @@ class MainWindow:
         self.root.geometry("800x550")
         self.root.minsize(700, 450)
 
-        # Sprachen aus SQLite laden
+        # Sprachen aus der Datenbank laden
         self.languages = get_languages()
 
-        # Zuordnung:
-        # "Deutsch" -> "de"
-        # "Koreanisch" -> "ko"
+        # Beispiel:
+        # Deutsch -> de
+        # Koreanisch -> ko
         self.language_codes = {
             name: code
             for code, name in self.languages
@@ -40,24 +40,36 @@ class MainWindow:
             text="Lernstick Übersetzung",
             font=("Arial", 22, "bold")
         )
-        title.pack(pady=(30, 5))
+
+        title.pack(
+            pady=(30, 5)
+        )
 
         subtitle = ttk.Label(
             self.root,
             text="Offline-Wörterbuch",
             font=("Arial", 11)
         )
-        subtitle.pack(pady=(0, 25))
+
+        subtitle.pack(
+            pady=(0, 25)
+        )
 
         # Sprachbereich
-        language_frame = ttk.Frame(self.root)
-        language_frame.pack(pady=10)
+        language_frame = ttk.Frame(
+            self.root
+        )
+
+        language_frame.pack(
+            pady=10
+        )
 
         # Ausgangssprache
         source_label = ttk.Label(
             language_frame,
             text="Ausgangssprache"
         )
+
         source_label.grid(
             row=0,
             column=0,
@@ -78,7 +90,7 @@ class MainWindow:
             padx=10
         )
 
-        # Tausch-Button
+        # Sprachen tauschen
         swap_button = ttk.Button(
             language_frame,
             text="⇄",
@@ -117,14 +129,18 @@ class MainWindow:
             padx=10
         )
 
-        # Standardsprachen auswählen
+        # Standardsprachen setzen
         if "Deutsch" in self.language_names:
-            self.source_language.set("Deutsch")
+            self.source_language.set(
+                "Deutsch"
+            )
 
         if "Englisch" in self.language_names:
-            self.target_language.set("Englisch")
+            self.target_language.set(
+                "Englisch"
+            )
 
-        # Eingabe
+        # Eingabebereich
         input_label = ttk.Label(
             self.root,
             text="Wort eingeben:"
@@ -140,16 +156,20 @@ class MainWindow:
             font=("Arial", 14)
         )
 
-        self.input_entry.pack(pady=5)
+        self.input_entry.pack(
+            pady=5
+        )
 
-        # Übersetzungsbutton
+        # Übersetzen
         translate_button = ttk.Button(
             self.root,
             text="Übersetzen",
             command=self.translate
         )
 
-        translate_button.pack(pady=20)
+        translate_button.pack(
+            pady=20
+        )
 
         # Ergebnis
         result_title = ttk.Label(
@@ -164,17 +184,21 @@ class MainWindow:
             self.root,
             text="",
             font=("Arial", 20),
-            wraplength=650
+            wraplength=650,
+            justify="left"
         )
 
-        self.result_label.pack(pady=15)
+        self.result_label.pack(
+            pady=15
+        )
 
-        # Enter-Taste
+        # Enter-Taste = Übersetzen
         self.input_entry.bind(
             "<Return>",
             lambda event: self.translate()
         )
 
+        # Cursor direkt ins Eingabefeld
         self.input_entry.focus()
 
     def swap_languages(self):
@@ -191,15 +215,33 @@ class MainWindow:
 
         if not word:
             self.result_label.config(
-            text="Bitte ein Wort eingeben."
+                text="Bitte ein Wort eingeben."
             )
             return
 
         source_name = self.source_language.get()
         target_name = self.target_language.get()
 
-        source_code = self.language_codes[source_name]
-        target_code = self.language_codes[target_name]
+        if not source_name or not target_name:
+            self.result_label.config(
+                text="Bitte beide Sprachen auswählen."
+            )
+            return
+
+        # Gleiche Ausgangs- und Zielsprache
+        if source_name == target_name:
+            self.result_label.config(
+                text=word
+            )
+            return
+
+        source_code = self.language_codes[
+            source_name
+        ]
+
+        target_code = self.language_codes[
+            target_name
+        ]
 
         translations = translate_word(
             word,
@@ -208,10 +250,24 @@ class MainWindow:
         )
 
         if translations:
+
+            if len(translations) == 1:
+
+                result_text = translations[0]
+
+            else:
+
+                result_text = "\n".join(
+                    f"• {translation}"
+                    for translation in translations
+                )
+
             self.result_label.config(
-                text=", ".join(translations)
+                text=result_text
             )
+
         else:
+
             self.result_label.config(
                 text="Keine Übersetzung gefunden."
             )

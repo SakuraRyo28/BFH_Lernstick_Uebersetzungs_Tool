@@ -5,11 +5,11 @@ from gui.main_window import MainWindow
 
 
 def main():
-    # Datenbank und Tabellen erstellen,
-    # falls sie noch nicht vorhanden sind
+
+    # Datenbank initialisieren
     create_database()
 
-    # Unterstützte Sprachen eintragen
+    # Sprachen einfügen
     insert_languages()
 
     # GUI starten
