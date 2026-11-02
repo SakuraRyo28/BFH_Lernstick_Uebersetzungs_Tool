@@ -91,6 +91,16 @@ def create_database():
     """)
 
     cursor.execute("""
+    CREATE UNIQUE INDEX IF NOT EXISTS idx_unique_word
+    ON words(language_id, word)
+    """)
+
+    cursor.execute("""
+        CREATE INDEX IF NOT EXISTS idx_word_lookup
+        ON words(word, language_id)
+    """)
+
+    cursor.execute("""
         CREATE TABLE IF NOT EXISTS translations (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             source_word_id INTEGER NOT NULL,
@@ -140,6 +150,21 @@ def insert_languages():
 
     return languages
 
+def get_languages():
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    cursor.execute("""
+        SELECT code, name
+        FROM languages
+        ORDER BY name
+    """)
+
+    languages = cursor.fetchall()
+
+    connection.close()
+
+    return languages
 
 if __name__ == "__main__":
     create_database()
